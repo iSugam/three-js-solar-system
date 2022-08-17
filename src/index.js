@@ -3,7 +3,6 @@ import sunTexture from "./assets/textures/sun.jpg";
 import mercuryTexture from "./assets/textures/mercury.jpg";
 import venusTexture from "./assets/textures/venus.jpg";
 import earthTexture from "./assets/textures/earth_day.jpg";
-import moonTexture from "./assets/textures/moon.jpg";
 import marsTexture from "./assets/textures/mars.jpg";
 import jupiterTexture from "./assets/textures/jupiter.jpg";
 import saturnTexture from "./assets/textures/saturn.jpg";
@@ -37,6 +36,11 @@ window.addEventListener("resize", () => {
     camera.updateProjectionMatrix()
 });
 
+// Add orbit controls for the camera movement
+const orbitControls = new OrbitControls( camera, renderer.domElement );
+orbitControls.panSpeed = 0.04
+orbitControls.update();
+
 // Sun
 const sunGeo = new THREE.SphereGeometry( 18, 150, 150 );
 const sunText = new THREE.TextureLoader().load(sunTexture) // Load Texture image
@@ -49,12 +53,12 @@ scene.add( sun );
 function createPlanet(size, texture, position, ring) {
     const geo = new THREE.SphereGeometry( size, 100, 100 );
     const planetTexture = new THREE.TextureLoader().load(texture) // Load Texture image
-    const material = new THREE.MeshStandardMaterial( {map: planetTexture} );
+    const material = new THREE.MeshLambertMaterial( {map: planetTexture} );
     const planetMesh = new THREE.Mesh( geo, material );
     planetMesh.position.x = position
     const planetObj = new THREE.Object3D()
     planetObj.add( planetMesh );
-    if(ring) {
+    if(ring) { // Only if Ring Exist
         const ringGeo = new THREE.RingGeometry(ring.innerRadius, ring.outerRadius, 32);
         const ringMat = new THREE.MeshBasicMaterial({
             map: new THREE.TextureLoader().load(ring.texture),
@@ -69,12 +73,13 @@ function createPlanet(size, texture, position, ring) {
     return { planetMesh, planetObj }
 }
 
+// Create Planets by adding size texture, and the position of the planet
 const mercury = createPlanet(0.8, mercuryTexture, 30);
 const venus = createPlanet(1, venusTexture, 40);
 const earth = createPlanet(1.6, earthTexture, 55);
 const mars = createPlanet(1.5, marsTexture, 63);
 const jupiter = createPlanet(2.8, jupiterTexture, 73);
-const saturn = createPlanet(2.4, saturnTexture, 85, {
+const saturn = createPlanet(2.4, saturnTexture, 85, { // For the Saturn Ring
     innerRadius: 2.5,
     outerRadius: 5,
     texture: saturnRingTexture,
@@ -83,18 +88,12 @@ const saturnRing = saturn.planetObj.children[1];
 const uranus = createPlanet(1.4, uranusTexture, 98);
 const neptune = createPlanet(1.3, neptuneTexture, 110);
 
+// Point light
 const pointLight = new THREE.PointLight( 0xffffff, 3, 300)
 scene.add( pointLight );
 
-// Add orbit controls to camera
-const controls = new OrbitControls( camera, renderer.domElement );
-controls.panSpeed = 0.04
-controls.update();
-
-
 // STARS Particles
 const vertices = [];
-
 for ( let i = 0; i < 10000; i ++ ) {
 	const x = THREE.MathUtils.randFloatSpread( 8000 );
 	const y = THREE.MathUtils.randFloatSpread( 2000 );
@@ -102,6 +101,7 @@ for ( let i = 0; i < 10000; i ++ ) {
 	vertices.push( x, y, z );
 }
 
+// Adding STARS
 const StarGeometry = new THREE.BufferGeometry();
 StarGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
 const starMaterial = new THREE.PointsMaterial( { 
@@ -112,22 +112,21 @@ const starMaterial = new THREE.PointsMaterial( {
 });
 const stars = new THREE.Points( StarGeometry, starMaterial );
 scene.add( stars );
-// Recursive function to keep re-rendering
-function animate() {
-    requestAnimationFrame(animate);
 
-    // Spinning
+// Planet Spinning
+function meshRotation() {
     mercury.planetMesh.rotateY(0.008);
     venus.planetMesh.rotateY(0.0001);
     earth.planetMesh.rotateY(0.05);
     mars.planetMesh.rotateY(0.05);
     jupiter.planetMesh.rotateY(0.1);
     saturn.planetMesh.rotateY(0.1);
-    saturnRing.rotateZ(0.05)
+    saturnRing.rotateZ(0.05);
     uranus.planetMesh.rotateY(0.09);
     neptune.planetMesh.rotateY(0.09);
-
-    // Rotation around the Sun
+};
+// Planet Rotation around the Sun
+function planetObjectRotation() {
     mercury.planetObj.rotateY(0.005);
     venus.planetObj.rotateY(0.003);
     earth.planetObj.rotateY(0.001);
@@ -136,9 +135,18 @@ function animate() {
     saturn.planetObj.rotateY(0.00035);
     uranus.planetObj.rotateY(0.00025);
     neptune.planetObj.rotateY(0.00018);
+};
 
-    sun.rotation.y += 0.001
-    controls.update();
+// Recursive function to keep re-rendering
+function animate() {
+    requestAnimationFrame(animate);
+    
+    // Sun spinning
+    sun.rotation.y += 0.001;
+    
+    meshRotation();
+    planetObjectRotation();
+
     renderer.render(scene, camera);
 }
 animate()
