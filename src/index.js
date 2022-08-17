@@ -51,7 +51,6 @@ if(window.innerWidth < 980) {
     movementSpeed = 1;
     autoForward = false;
     rollSpeed = 5;
-    domElement = false
     controls.update(0.06);
 
 // Sun
