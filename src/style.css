@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300&display=swap');
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 body {
@@ -9,4 +11,32 @@ body {
     padding: 0;
     height: 100vh;
     overflow: hidden;
+}
+
+.instructions {
+    position: absolute;
+    z-index: 99;
+    color: #fff;
+}
+
+.instructions ul {
+    list-style: none;
+}
+
+.instructions ul li {
+    margin: 30px 20px;
+    font-size: 18px;
+}
+
+.instructions ul li span {
+    margin: 0 20px;
+    border: 1px solid #fff;
+    padding: 10px 12px;
+    border-radius: 10px;
+}
+
+@media (max-width: 980px) {
+    .instructions {
+        display: none;
+    }
 }
