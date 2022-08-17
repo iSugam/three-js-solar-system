@@ -13,6 +13,7 @@ import starTexture from "./assets/textures/stars.png";
 
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { FlyControls } from "three/examples/jsm/controls/FlyControls";
 import { DoubleSide } from "three";
 
 // Add webgl Renderer
@@ -36,10 +37,22 @@ window.addEventListener("resize", () => {
     camera.updateProjectionMatrix()
 });
 
-// Add orbit controls for the camera movement
-const orbitControls = new OrbitControls( camera, renderer.domElement );
-orbitControls.panSpeed = 0.04
-orbitControls.update();
+let controls;
+if(window.innerWidth < 980) {
+    // Add orbit controls for the camera movement on Mobile
+    controls = new OrbitControls( camera, renderer.domElement );
+    controls.panSpeed = 0.04
+    controls.update();
+}
+    // Add Fly controls for the camera movement on Desktop
+    controls = new FlyControls( camera, renderer.domElement );
+    let { dragToLook, autoForward, movementSpeed, rollSpeed, domElement } = controls;
+    dragToLook = true;
+    movementSpeed = 1;
+    autoForward = false;
+    rollSpeed = 5;
+    domElement = false
+    controls.update(0.06);
 
 // Sun
 const sunGeo = new THREE.SphereGeometry( 18, 150, 150 );
@@ -147,6 +160,7 @@ function animate() {
     meshRotation();
     planetObjectRotation();
 
+    controls.update(0.3);
     renderer.render(scene, camera);
 }
 animate()
