@@ -1,21 +1,19 @@
-## Three.js starter file with webpack
+## Three.js Solar System
+#### By - Wael Yasmina
+- Youtube Channel [Click to Visit](https://www.youtube.com/watch?v=XXzqSAt3UIw&t=560s)
 
-### Clone
+### Clone the project
 ```bash
-git clone https://github.com/iSugam/three-js-starter.git
+git clone https://github.com/iSugam/three-js-solar-system.git
 ```
-
-### Installation
+ 
 ```bash
+# To Install
 npm install
-```
 
-### Start the project
-```bash
+# To Start on local server
 npm start
-```
 
-### Build
-```bash
+# To Build the project
 npm run build
 ```
