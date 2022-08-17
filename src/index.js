@@ -46,7 +46,7 @@ if(window.innerWidth < 980) {
 }
     // Add Fly controls for the camera movement on Desktop
     controls = new FlyControls( camera, renderer.domElement );
-    let { dragToLook, autoForward, movementSpeed, rollSpeed, domElement } = controls;
+    let { dragToLook, autoForward, movementSpeed, rollSpeed } = controls;
     dragToLook = true;
     movementSpeed = 1;
     autoForward = false;
