@@ -11,10 +11,10 @@ import uranusTexture from "./assets/textures/uranus.jpg";
 import neptuneTexture from "./assets/textures/neptune.jpg";
 import starTexture from "./assets/textures/stars.png";
 
-import * as THREE from "three";
+import THREE, { scene } from "./app/Three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { FlyControls } from "three/examples/jsm/controls/FlyControls";
-import { DoubleSide } from "three";
+import createPlanet from "./app/CreatePlanet";
 
 // Add webgl Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -24,9 +24,6 @@ renderer.setPixelRatio(window.devicePixelRatio);
 // Add renderer to the body
 document.body.appendChild(renderer.domElement);
 
-
-// Add Scene and camera
-const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(100, 0, 80) // x, y, and z positions
 
@@ -60,30 +57,6 @@ const sunMaterial = new THREE.MeshBasicMaterial( {map: sunText} );
 const sun = new THREE.Mesh( sunGeo, sunMaterial );
 sun.position.x = 2
 scene.add( sun );
-
-// Function for creating planets
-function createPlanet(size, texture, position, ring) {
-    const geo = new THREE.SphereGeometry( size, 100, 100 );
-    const planetTexture = new THREE.TextureLoader().load(texture) // Load Texture image
-    const material = new THREE.MeshLambertMaterial( {map: planetTexture} );
-    const planetMesh = new THREE.Mesh( geo, material );
-    planetMesh.position.x = position
-    const planetObj = new THREE.Object3D()
-    planetObj.add( planetMesh );
-    if(ring) { // Only if Ring Exist
-        const ringGeo = new THREE.RingGeometry(ring.innerRadius, ring.outerRadius, 32);
-        const ringMat = new THREE.MeshBasicMaterial({
-            map: new THREE.TextureLoader().load(ring.texture),
-            side: DoubleSide
-        });
-        const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-        planetObj.add(ringMesh);
-        ringMesh.position.x = position;
-        ringMesh.rotation.x = -0.6 * Math.PI
-    }
-    scene.add(planetObj)
-    return { planetMesh, planetObj }
-}
 
 // Create Planets by adding size texture, and the position of the planet
 const mercury = createPlanet(0.8, mercuryTexture, 30);
